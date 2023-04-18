@@ -77,9 +77,14 @@ def clean_data(
         axis=1
     )
 
+    # Select rows corresponding to specified country_code
+    selected_data: pd.DataFrame = spliced_data[
+        spliced_data['region'].str.upper() == country_code.upper()
+        ]
+
     # Transform spliced_data to long format
     long_data: pd.DataFrame = pd.melt(
-        frame=spliced_data,
+        frame=selected_data,
         id_vars=["unit", "sex", "age", "region"],
         var_name="year",
         value_name="value"
@@ -105,12 +110,7 @@ def clean_data(
     )
     long_data = long_data.dropna(subset=["value"])
 
-    # Select rows corresponding to specified country_code
-    selected_data: pd.DataFrame = long_data[
-        long_data['region'].str.upper() == country_code.upper()
-    ]
-
-    return selected_data
+    return long_data
 
 
 def save_data(data: pd.DataFrame) -> None:
