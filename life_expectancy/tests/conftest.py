@@ -24,7 +24,7 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
 
 
 @pytest.fixture(scope="session")
-def eu_life_expectancy_data() -> pd.DataFrame:
+def life_expectancy_data() -> pd.DataFrame:
     """Fixture to load data from life expectancy """
     return pd.read_csv(
         FIXTURES_DIR / "pt_life_expectancy_expected.tsv",
