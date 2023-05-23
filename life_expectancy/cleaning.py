@@ -130,18 +130,19 @@ def save_data(data: pd.DataFrame) -> None:
     )
 
 
-def main(country_code: str = 'PT') -> None:
+def main(country_code: str = 'PT') -> pd.DataFrame:
     """
     Calls load data, clean data and save data
     :param country_code: A string representing the country code of the country
     to be selected.
-    :return:
+    :return: Cleaned data frame
     """
     wide_data = load_data()
     cleaned_data = clean_data(
         wide_data=wide_data,
         country_code=country_code)
     save_data(data=cleaned_data)
+    return cleaned_data
 
 
 if __name__ == "__main__":  # pragma: no cover
