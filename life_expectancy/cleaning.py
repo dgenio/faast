@@ -17,20 +17,26 @@ def get_current_directory_full_path() -> str:
     return current_dir_path
 
 
-def load_data() -> pd.DataFrame:
+def load_data(
+        path: str = None
+) -> pd.DataFrame:
     """
     Loads the 'eu_life_expectancy_raw.tsv' data file from the 'data' folder
+    :param path: path to file to load.
     :return: Pandas dataframe with data
     :raises FileNotFoundError: If the 'eu_life_expectancy_raw.tsv' file cannot
      be found.
     """
-    # Load data
-    raw_data: pd.DataFrame = pd.read_csv(
-        join(
+    # Ensure path
+    if path is None:
+        path = join(
             get_current_directory_full_path(),
             "data",
             "eu_life_expectancy_raw.tsv"
-        ),
+        )
+    # Load data
+    raw_data: pd.DataFrame = pd.read_csv(
+        path,
         sep="\t",
         header=0
     )
@@ -130,14 +136,18 @@ def save_data(data: pd.DataFrame) -> None:
     )
 
 
-def main(country_code: str = 'PT') -> pd.DataFrame:
+def main(
+        country_code: str = 'PT',
+        path: str = None
+) -> pd.DataFrame:
     """
     Calls load data, clean data and save data
     :param country_code: A string representing the country code of the country
     to be selected.
+    :param path: path to file to load.
     :return: Cleaned data frame
     """
-    wide_data = load_data()
+    wide_data = load_data(path=path)
     cleaned_data = clean_data(
         wide_data=wide_data,
         country_code=country_code)
