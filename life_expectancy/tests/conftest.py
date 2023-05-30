@@ -27,7 +27,6 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
 def life_expectancy_data() -> pd.DataFrame:
     """Fixture to load data from life expectancy """
     return pd.read_csv(
-        FIXTURES_DIR / "pt_life_expectancy_expected.tsv",
-        sep="\t",
-        header=0
+        FIXTURES_DIR / "eu_life_expectancy_input.tsv",
+        sep='\t'
     )
