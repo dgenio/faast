@@ -20,4 +20,18 @@ def run_before_and_after_tests() -> None:
 @pytest.fixture(scope="session")
 def pt_life_expectancy_expected() -> pd.DataFrame:
     """Fixture to load the expected output of the cleaning script"""
-    return pd.read_csv(FIXTURES_DIR / "pt_life_expectancy_expected.csv")
+    data_expected = pd.read_csv(
+        FIXTURES_DIR / "pt_life_expectancy_expected.csv"
+    )
+    data_expected["value"] = data_expected[
+        "value"].astype("float32")
+    return data_expected
+
+
+@pytest.fixture(scope="session")
+def life_expectancy_data() -> pd.DataFrame:
+    """Fixture to load data from life expectancy """
+    return pd.read_csv(
+        FIXTURES_DIR / "eu_life_expectancy_input.tsv",
+        sep='\t'
+    )
