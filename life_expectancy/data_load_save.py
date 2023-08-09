@@ -1,5 +1,5 @@
 from inspect import getsourcefile
-from os.path import dirname, abspath, join
+from os.path import dirname, abspath, join, splitext
 import pandas as pd
 from abc import ABC, abstractmethod
 from cleaning import wide_to_long_format
@@ -64,6 +64,21 @@ class JSONLoadStrategy(LoadStrategy):
         # Load data
         raw_data: pd.DataFrame = pd.read_json(file_path)
         return raw_data
+
+
+class DataLoader:
+    @staticmethod
+    def load_data(file_path: str) -> pd.DataFrame:
+        if not file_path:
+            raise ValueError("Input file not specified")
+        file_name, file_extension = splitext(file_path)
+        if file_extension == ".tsv":
+            load_strategy = TSVLoadStrategy()
+        elif file_extension == ".json":
+            load_strategy = JSONLoadStrategy()
+        else:
+            raise ValueError("File format not supported")
+        return load_strategy.load_data(file_path=file_path)
 
 
 def save_data(data: pd.DataFrame) -> None:
