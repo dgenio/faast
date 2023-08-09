@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
-from life_expectancy.cleaning import clean_data
-from life_expectancy.data_load_save import load_data, save_data
+from cleaning import clean_data
+from data_load_save import DataLoader, save_data
 
 
 def main(
@@ -15,9 +15,9 @@ def main(
     :param path: path to file to load.
     :return: Cleaned data frame
     """
-    wide_data = load_data(path=path)
+    long_data = DataLoader.load_data(path=path)
     cleaned_data = clean_data(
-        wide_data=wide_data,
+        long_data=long_data,
         country_code=country_code)
     save_data(data=cleaned_data)
     return cleaned_data
