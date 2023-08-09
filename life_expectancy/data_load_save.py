@@ -65,7 +65,10 @@ class JSONLoadStrategy(LoadStrategy):
         raw_data: pd.DataFrame = pd.read_json(file_path)
 
         # Rename 'country' column to 'region'
-        raw_data.rename(columns={'country': 'region'}, inplace=True)
+        raw_data.rename(columns={
+            'country': 'region',
+            'life_expectancy': 'value'
+            }, inplace=True)
 
         return raw_data
 
