@@ -20,7 +20,7 @@ def __get_current_directory_full_path() -> str:
 
 class LoadStrategy(ABC):
     @abstractmethod
-    def load_data(file_path: str = None) -> pd.DataFrame:
+    def load_data(self, file_path: str = None) -> pd.DataFrame:
         """Load data from file and ensure common strucutre ( long )
 
         Args:
@@ -32,7 +32,7 @@ class LoadStrategy(ABC):
 
 
 class TSVLoadStrategy(LoadStrategy):
-    def load_data(file_path: str = None) -> pd.DataFrame:
+    def load_data(self, file_path: str = None) -> pd.DataFrame:
         # Ensure path
         if file_path is None:
             file_path = join(
@@ -53,7 +53,7 @@ class TSVLoadStrategy(LoadStrategy):
 
 
 class JSONLoadStrategy(LoadStrategy):
-    def load_data(file_path: str = None) -> pd.DataFrame:
+    def load_data(self, file_path: str = None) -> pd.DataFrame:
         # Ensure path
         if file_path is None:
             file_path = join(

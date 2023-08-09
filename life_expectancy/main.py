@@ -15,7 +15,7 @@ def main(
     :param path: path to file to load.
     :return: Cleaned data frame
     """
-    long_data = DataLoader.load_data(path=path)
+    long_data = DataLoader.load_data(file_path=path)
     cleaned_data = clean_data(
         long_data=long_data,
         country_code=country_code)
