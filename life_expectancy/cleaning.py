@@ -60,7 +60,7 @@ def clean_data(
         ]
 
     # Convert year to numeric data types and drop rows with missing values
-    selected_data['year'] = pd.to_numeric(
+    selected_data.loc[:, 'year'] = pd.to_numeric(
         selected_data['year'],
         errors="coerce")
     selected_data = selected_data.dropna(subset=["year"])
