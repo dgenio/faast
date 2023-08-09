@@ -1,6 +1,8 @@
 from inspect import getsourcefile
 from os.path import dirname, abspath, join
 import pandas as pd
+from abc import ABC, abstractmethod
+from cleaning import wide_to_long_format
 
 
 def __get_current_directory_full_path() -> str:
@@ -16,30 +18,52 @@ def __get_current_directory_full_path() -> str:
     return current_dir_path
 
 
-def load_data(
-        path: str = None
-) -> pd.DataFrame:
-    """
-    Loads the 'eu_life_expectancy_raw.tsv' data file from the 'data' folder
-    :param path: path to file to load.
-    :return: Pandas dataframe with data
-    :raises FileNotFoundError: If the 'eu_life_expectancy_raw.tsv' file cannot
-     be found.
-    """
-    # Ensure path
-    if path is None:
-        path = join(
-            __get_current_directory_full_path(),
-            "data",
-            "eu_life_expectancy_raw.tsv"
+class LoadStrategy(ABC):
+    @abstractmethod
+    def load_data(file_path: str = None) -> pd.DataFrame:
+        """Load data from file and ensure common strucutre ( long )
+
+        Args:
+            file_path (str, optional): _description_. Defaults to None.
+
+        Returns:
+            pd.DataFrame: _description_
+        """
+
+
+class TSVLoadStrategy(LoadStrategy):
+    def load_data(file_path: str = None) -> pd.DataFrame:
+        # Ensure path
+        if file_path is None:
+            file_path = join(
+                __get_current_directory_full_path(),
+                "data",
+                "eu_life_expectancy_raw.tsv"
+            )
+        # Load data
+        raw_data: pd.DataFrame = pd.read_csv(
+            file_path,
+            sep="\t",
+            header=0
         )
-    # Load data
-    raw_data: pd.DataFrame = pd.read_csv(
-        path,
-        sep="\t",
-        header=0
-    )
-    return raw_data
+
+        long_data = wide_to_long_format(wide_data=raw_data)
+
+        return long_data
+
+
+class JSONLoadStrategy(LoadStrategy):
+    def load_data(file_path: str = None) -> pd.DataFrame:
+        # Ensure path
+        if file_path is None:
+            file_path = join(
+                __get_current_directory_full_path(),
+                "data",
+                "eurostat_life_expect.json"
+            )
+        # Load data
+        raw_data: pd.DataFrame = pd.read_json(file_path)
+        return raw_data
 
 
 def save_data(data: pd.DataFrame) -> None:

@@ -1,8 +1,33 @@
 import pandas as pd
 
 
+def wide_to_long_format(wide_data: pd.DataFrame) -> pd.DataFrame:
+    # Split mixed column into separate columns
+    spliced_columns: pd.DataFrame = wide_data[
+        'unit,sex,age,geo\\time'
+    ].str.split(
+        ',',
+        expand=True
+    )
+    spliced_columns.columns = ['unit', 'sex', 'age', 'region']
+    spliced_data: pd.DataFrame = pd.concat(
+        [spliced_columns, wide_data.iloc[:, 1:]],
+        axis=1
+    )
+
+    # Transform spliced_data to long format
+    long_data: pd.DataFrame = pd.melt(
+        frame=spliced_data,
+        id_vars=["unit", "sex", "age", "region"],
+        var_name="year",
+        value_name="value"
+    )
+
+    return long_data
+
+
 def clean_data(
-        wide_data: pd.DataFrame,
+        long_data: pd.DataFrame,
         country_code: str = 'PT',
 ) -> pd.DataFrame:
     """
@@ -28,50 +53,30 @@ def clean_data(
     to be selected.
     :return: A pandas DataFrame containing the cleaned and transformed data.
     """
-    # Split mixed column into separate columns
-    spliced_columns: pd.DataFrame = wide_data[
-        'unit,sex,age,geo\\time'
-    ].str.split(
-        ',',
-        expand=True
-    )
-    spliced_columns.columns = ['unit', 'sex', 'age', 'region']
-    spliced_data: pd.DataFrame = pd.concat(
-        [spliced_columns, wide_data.iloc[:, 1:]],
-        axis=1
-    )
 
     # Select rows corresponding to specified country_code
-    selected_data: pd.DataFrame = spliced_data[
-        spliced_data['region'].str.upper() == country_code.upper()
+    selected_data: pd.DataFrame = long_data[
+        long_data['region'].str.upper() == country_code.upper()
         ]
 
-    # Transform spliced_data to long format
-    long_data: pd.DataFrame = pd.melt(
-        frame=selected_data,
-        id_vars=["unit", "sex", "age", "region"],
-        var_name="year",
-        value_name="value"
-    )
-
     # Convert year to numeric data types and drop rows with missing values
-    long_data['year'] = pd.to_numeric(
-        long_data['year'],
+    selected_data['year'] = pd.to_numeric(
+        selected_data['year'],
         errors="coerce")
-    long_data = long_data.dropna(subset=["year"])
+    selected_data = selected_data.dropna(subset=["year"])
 
     # Convert value columns to numeric data types and drop rows with missing
     # values
     numeric_pattern = r'(\d+\.\d+|\d+)'
-    numeric_values: pd.Series = long_data["value"].str.extract(
+    numeric_values: pd.Series = selected_data["value"].str.extract(
         numeric_pattern,
         expand=False
     )
-    long_data['value'] = pd.to_numeric(
+    selected_data['value'] = pd.to_numeric(
         numeric_values,
         downcast="float",
         errors="coerce"
     )
-    long_data = long_data.dropna(subset=["value"])
+    selected_data = selected_data.dropna(subset=["value"])
 
-    return long_data
+    return selected_data
