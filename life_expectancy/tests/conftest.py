@@ -24,7 +24,7 @@ def pt_life_expectancy_expected() -> pd.DataFrame:
         FIXTURES_DIR / "pt_life_expectancy_expected.csv"
     )
     data_expected["value"] = data_expected[
-        "value"].astype("float32")
+        "value"].astype("float64")
     return data_expected
 
 

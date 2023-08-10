@@ -2,17 +2,15 @@ import argparse
 
 import pandas as pd
 
-from loading_strategies import DataLoader, save_data
-from transformation_interface import (ConvertValueToNumericTransformation,
-                                      ConvertYearToNumericTransformation,
-                                      DropMissingValuesTransformation,
-                                      RenameColumnsTransformation,
-                                      SelectCountryTransformation,
-                                      TransformationPipeline,
-                                      WideToLongTransformation)
+from life_expectancy.loading_strategies import DataLoader, save_data, Region
+from life_expectancy.transformation_interface import (
+    ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,
+    DropMissingValuesTransformation, RenameColumnsTransformation,
+    SelectCountryTransformation, TransformationPipeline,
+    WideToLongTransformation)
 
 
-def main(file_path: str, country_code: str = 'PT') -> pd.DataFrame:
+def main(file_path: str, country_code: Region = Region.PT) -> pd.DataFrame:
     # Load the data using the appropriate strategy
     raw_data = DataLoader.load_data(file_path=file_path)
 
@@ -53,4 +51,7 @@ if __name__ == "__main__":  # pragma: no cover
     )
     args = parser.parse_args()
 
-    main(country_code=args.country)
+    # Convert the country code string to the corresponding Region enum value
+    country_code = Region(args.country.upper())
+
+    main(country_code=country_code)

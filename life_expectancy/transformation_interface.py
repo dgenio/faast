@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+from life_expectancy.loading_strategies import Region
 
 
 class Transformation(ABC):
@@ -69,16 +70,20 @@ class RenameColumnsTransformation(Transformation):
 
 
 class SelectCountryTransformation(Transformation):
-    def __init__(self, country_code: str = 'PT'):
+    def __init__(self, country_code: Region = Region.PT):
         self.country_code = country_code
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        return data[data['region'].str.upper() == self.country_code.upper()]
+        return data[
+            data['region'].str.upper() == self.country_code.value.upper()
+        ]
 
 
 class ConvertYearToNumericTransformation(Transformation):
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        data.loc[:, 'year'] = pd.to_numeric(data['year'], errors="coerce")
+        data['year'] = pd.to_numeric(data['year'], errors="coerce")
+        data.dropna(subset=['year'], inplace=True)
+        data['year'] = data['year'].astype('int64')
         return data
 
     def is_necessary(self, data: pd.DataFrame) -> bool:
@@ -94,7 +99,6 @@ class ConvertValueToNumericTransformation(Transformation):
         )
         data['value'] = pd.to_numeric(
             numeric_values,
-            downcast="float",
             errors="coerce"
         )
         return data

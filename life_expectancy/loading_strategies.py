@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
-import pandas as pd
-from os.path import dirname, abspath, join, splitext
+from enum import Enum
 from inspect import getsourcefile
+from os.path import abspath, dirname, join, splitext
+
+import pandas as pd
 
 
 class LoadStrategy(ABC):
@@ -101,3 +103,8 @@ def save_data(data: pd.DataFrame) -> None:
         ),
         index=False
     )
+
+
+class Region(Enum):
+    PT = "PT"
+    ES = "ES"
