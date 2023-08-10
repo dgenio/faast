@@ -1,25 +1,46 @@
 import argparse
+
 import pandas as pd
-from cleaning import clean_data
-from data_load_save import DataLoader, save_data
+
+from loading_strategies import DataLoader, save_data
+from transformation_interface import (ConvertValueToNumericTransformation,
+                                      ConvertYearToNumericTransformation,
+                                      DropMissingValuesTransformation,
+                                      RenameColumnsTransformation,
+                                      SelectCountryTransformation,
+                                      TransformationPipeline,
+                                      WideToLongTransformation)
 
 
-def main(
-        country_code: str = 'PT',
-        path: str = None
-) -> pd.DataFrame:
-    """
-    Calls load data, clean data and save data
-    :param country_code: A string representing the country code of the country
-    to be selected.
-    :param path: path to file to load.
-    :return: Cleaned data frame
-    """
-    long_data = DataLoader.load_data(file_path=path)
-    cleaned_data = clean_data(
-        long_data=long_data,
-        country_code=country_code)
+def main(file_path: str, country_code: str = 'PT') -> pd.DataFrame:
+    # Load the data using the appropriate strategy
+    raw_data = DataLoader.load_data(file_path=file_path)
+
+    transformations = [
+        RenameColumnsTransformation({
+            'life_expectancy': 'value',
+            'country': 'region'
+        }),
+        WideToLongTransformation(),
+        SelectCountryTransformation(
+            country_code=country_code
+        ),
+        ConvertYearToNumericTransformation(),
+        ConvertValueToNumericTransformation(),
+        DropMissingValuesTransformation(
+            columns=['year', 'value']
+        )
+    ]
+
+    # Define the transformation pipeline
+    pipeline = TransformationPipeline()
+    for transformation in transformations:
+        pipeline.add_transformation(transformation)
+
+    # Apply the transformations
+    cleaned_data = pipeline.transform(raw_data)
     save_data(data=cleaned_data)
+
     return cleaned_data
 
 
