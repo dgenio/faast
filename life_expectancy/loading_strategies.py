@@ -75,7 +75,7 @@ class DataLoader:
         if not file_path:
             raise ValueError("Input file not specified")
         _, file_extension = splitext(file_path)
-        load_strategy = LoadStrategyFactory.create_strategy(file_extension)
+        load_strategy = create_strategy(file_extension)
         return load_strategy.load_data(file_path=file_path)
 
 
