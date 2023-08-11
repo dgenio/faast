@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
+import warnings
 from life_expectancy.region import Region
 
 
@@ -24,6 +25,10 @@ class TransformationPipeline:
         for transformation in self.transformations:
             if transformation.is_necessary(data):
                 data = transformation.transform(data)
+            else:
+                warnings.warn(
+                    f"Transformation {transformation} is not necessary."
+                )
         return data
 
 
