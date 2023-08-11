@@ -1,25 +1,57 @@
 import argparse
+
 import pandas as pd
-from life_expectancy.cleaning import clean_data
-from life_expectancy.data_load_save import load_data, save_data
+
+from life_expectancy.loading_strategies import DataLoader
+from life_expectancy.save_data import save_data
+from life_expectancy.region import Region
+from life_expectancy.transformation_interface import (
+    ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,
+    CallableTransformation, RenameColumnsTransformation,
+    SelectCountryTransformation, TransformationPipeline,
+    WideToLongTransformation)
 
 
-def main(
-        country_code: str = 'PT',
-        path: str = None
-) -> pd.DataFrame:
+def main(file_path: str, country_code: Region = Region.PT) -> pd.DataFrame:
+    """Run loading and data cleaning
+
+    Args:
+        file_path (str): Path to file
+        country_code (Region, optional): Region to filter.
+        Defaults to Region.PT.
+
+    Returns:
+        pd.DataFrame: Data filtered and clean
     """
-    Calls load data, clean data and save data
-    :param country_code: A string representing the country code of the country
-    to be selected.
-    :param path: path to file to load.
-    :return: Cleaned data frame
-    """
-    wide_data = load_data(path=path)
-    cleaned_data = clean_data(
-        wide_data=wide_data,
-        country_code=country_code)
+    # Load the data using the appropriate strategy
+    raw_data = DataLoader.load_data(file_path=file_path)
+
+    transformations = [
+        RenameColumnsTransformation({
+            'life_expectancy': 'value',
+            'country': 'region'
+        }),
+        WideToLongTransformation(),
+        SelectCountryTransformation(
+            country_code=country_code
+        ),
+        ConvertYearToNumericTransformation(),
+        ConvertValueToNumericTransformation(),
+        CallableTransformation(
+            pd.DataFrame.dropna,
+            subset=['year', 'value']
+        )
+    ]
+
+    # Define the transformation pipeline
+    pipeline = TransformationPipeline()
+    for transformation in transformations:
+        pipeline.add_transformation(transformation)
+
+    # Apply the transformations
+    cleaned_data = pipeline.transform(raw_data)
     save_data(data=cleaned_data)
+
     return cleaned_data
 
 
@@ -30,6 +62,14 @@ if __name__ == "__main__":  # pragma: no cover
         type=str, default='PT',
         help='Country code to filter data'
     )
+    parser.add_argument(
+        '--file_path',
+        type=str, required=True,
+        help='File with data'
+    )
     args = parser.parse_args()
 
-    main(country_code=args.country)
+    # Convert the country code string to the corresponding Region enum value
+    country = Region(args.country.upper())
+
+    main(file_path=args.file_path, country_code=country)
