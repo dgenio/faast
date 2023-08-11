@@ -47,17 +47,26 @@ class JSONLoadStrategy(LoadStrategy):
         return raw_data
 
 
-class LoadStrategyFactory:
-    @staticmethod
-    def create_strategy(file_extension: str) -> LoadStrategy:
-        strategies = {
-            ".tsv": TSVLoadStrategy,
-            ".json": JSONLoadStrategy
-        }
-        strategy = strategies.get(file_extension)
-        if strategy is None:
-            raise ValueError(f"File format {file_extension} not supported")
-        return strategy()
+def create_strategy(file_extension: str) -> LoadStrategy:
+    """Return load strategy dependent on file extension
+
+    Args:
+        file_extension (str): Type of file. Ex: ".tsv"
+
+    Raises:
+        ValueError: If file type is not supported
+
+    Returns:
+        LoadStrategy: Class that handles the loading of data
+    """
+    strategies = {
+        ".tsv": TSVLoadStrategy,
+        ".json": JSONLoadStrategy
+    }
+    strategy = strategies.get(file_extension)
+    if strategy is None:
+        raise ValueError(f"File format {file_extension} not supported")
+    return strategy()
 
 
 class DataLoader:
