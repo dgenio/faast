@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from life_expectancy.loading_strategies import (
-    DataLoader, JSONLoadStrategy, LoadStrategyFactory, Region, TSVLoadStrategy,
+    DataLoader, JSONLoadStrategy, create_strategy, TSVLoadStrategy,
     get_current_directory_full_path, get_file_extension, save_data)
 
 from . import FIXTURES_DIR
@@ -46,18 +46,18 @@ def test_default_json_file_path():
 
 
 def test_create_strategy_for_tsv():
-    strategy = LoadStrategyFactory.create_strategy(".tsv")
+    strategy = create_strategy(".tsv")
     assert isinstance(strategy, TSVLoadStrategy)
 
 
 def test_create_strategy_for_json():
-    strategy = LoadStrategyFactory.create_strategy(".json")
+    strategy = create_strategy(".json")
     assert isinstance(strategy, JSONLoadStrategy)
 
 
 def test_create_strategy_with_unsupported_extension():
     with pytest.raises(ValueError) as excinfo:
-        LoadStrategyFactory.create_strategy(".unsupported_extension")
+        create_strategy(".unsupported_extension")
     assert str(excinfo.value) == "File format .unsupported_extension not supported"
 
 
