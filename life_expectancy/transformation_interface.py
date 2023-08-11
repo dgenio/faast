@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import pandas as pd
-from life_expectancy.loading_strategies import Region
+from life_expectancy.region import Region
 
 
 class Transformation(ABC):

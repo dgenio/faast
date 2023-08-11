@@ -35,7 +35,11 @@ def test_tsv_load_strategy_default_path():
     strategy = TSVLoadStrategy()
     with mock.patch('pandas.read_csv') as mock_read_csv:
         strategy.load_data()
-        expected_path = join(get_current_directory_full_path(), "data", "eu_life_expectancy_raw.tsv")
+        expected_path = join(
+            get_current_directory_full_path(),
+            "data",
+            "eu_life_expectancy_raw.tsv"
+        )
         mock_read_csv.assert_called_with(expected_path, sep="\t", header=0)
 
 
@@ -43,7 +47,6 @@ def test_default_json_file_path():
     strategy = JSONLoadStrategy()
     data = strategy.load_data()
     assert isinstance(data, pd.DataFrame)
-    # You can add more assertions based on the expected content of the default file.
 
 
 def test_create_strategy_for_tsv():
@@ -59,7 +62,9 @@ def test_create_strategy_for_json():
 def test_create_strategy_with_unsupported_extension():
     with pytest.raises(ValueError) as excinfo:
         create_strategy(".unsupported_extension")
-    assert str(excinfo.value) == "File format .unsupported_extension not supported"
+    assert str(
+        excinfo.value
+    ) == "File format .unsupported_extension not supported"
 
 
 def test_load_data_without_file_path():
