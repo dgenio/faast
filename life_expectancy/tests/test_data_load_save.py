@@ -7,7 +7,8 @@ import pytest
 
 from life_expectancy.loading_strategies import (
     DataLoader, JSONLoadStrategy, create_strategy, TSVLoadStrategy,
-    get_current_directory_full_path, get_file_extension, save_data)
+    get_current_directory_full_path, get_file_extension)
+from life_expectancy.save_data import save_data
 
 from . import FIXTURES_DIR
 
