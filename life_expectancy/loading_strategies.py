@@ -97,23 +97,6 @@ def get_file_extension(file_path: str) -> str:
     return file_extension
 
 
-def save_data(data: pd.DataFrame) -> None:
-    """
-    Data is saved to a CSV file named 'pt_life_expectancy.csv' in the 'data'
-    folder.
-    :param data:
-    :return:
-    """
-    data.to_csv(
-        join(
-            get_current_directory_full_path(),
-            "data",
-            "pt_life_expectancy.csv"
-        ),
-        index=False
-    )
-
-
 class Region(Enum):
     PT = "PT"
     ES = "ES"
