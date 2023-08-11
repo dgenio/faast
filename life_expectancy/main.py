@@ -2,7 +2,9 @@ import argparse
 
 import pandas as pd
 
-from life_expectancy.loading_strategies import DataLoader, save_data, Region
+from life_expectancy.loading_strategies import DataLoader
+from life_expectancy.save_data import save_data
+from life_expectancy.region import Region
 from life_expectancy.transformation_interface import (
     ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,
     DropMissingValuesTransformation, RenameColumnsTransformation,

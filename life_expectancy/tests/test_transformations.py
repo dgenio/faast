@@ -3,7 +3,8 @@ import unittest
 
 import pandas as pd
 
-from life_expectancy.loading_strategies import get_current_directory_full_path, Region
+from life_expectancy.loading_strategies import get_current_directory_full_path
+from life_expectancy.region import Region
 from life_expectancy.main import main
 from life_expectancy.transformation_interface import (
     ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,

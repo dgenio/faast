@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
 from inspect import getsourcefile
 from os.path import abspath, dirname, join, splitext
 
@@ -95,8 +94,3 @@ def get_current_directory_full_path() -> str:
 def get_file_extension(file_path: str) -> str:
     _, file_extension = splitext(file_path)
     return file_extension
-
-
-class Region(Enum):
-    PT = "PT"
-    ES = "ES"
