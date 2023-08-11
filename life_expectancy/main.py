@@ -7,7 +7,7 @@ from life_expectancy.save_data import save_data
 from life_expectancy.region import Region
 from life_expectancy.transformation_interface import (
     ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,
-    DropMissingValuesTransformation, RenameColumnsTransformation,
+    CallableTransformation, RenameColumnsTransformation,
     SelectCountryTransformation, TransformationPipeline,
     WideToLongTransformation)
 
@@ -27,8 +27,9 @@ def main(file_path: str, country_code: Region = Region.PT) -> pd.DataFrame:
         ),
         ConvertYearToNumericTransformation(),
         ConvertValueToNumericTransformation(),
-        DropMissingValuesTransformation(
-            columns=['year', 'value']
+        CallableTransformation(
+            pd.DataFrame.dropna,
+            subset=['year', 'value']
         )
     ]
 

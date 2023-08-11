@@ -16,7 +16,7 @@ class TSVLoadStrategy(LoadStrategy):
     def load_data(self, file_path: str = None) -> pd.DataFrame:
         """Loads data from a TSV file.
 
-        :param file_path: Path to the TSV file. 
+        :param file_path: Path to the TSV file.
         If None, a default path is used.
         :return: A DataFrame containing the loaded data.
         """
@@ -41,7 +41,7 @@ class JSONLoadStrategy(LoadStrategy):
     def load_data(self, file_path: str = None) -> pd.DataFrame:
         """Loads data from a JSON file.
 
-        :param file_path: Path to the JSON file. 
+        :param file_path: Path to the JSON file.
         If None, a default path is used.
         :return: A DataFrame containing the loaded data.
         """

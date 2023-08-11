@@ -8,7 +8,7 @@ from life_expectancy.region import Region
 from life_expectancy.main import main
 from life_expectancy.transformation_interface import (
     ConvertValueToNumericTransformation, ConvertYearToNumericTransformation,
-    DropMissingValuesTransformation, RenameColumnsTransformation,
+    CallableTransformation, RenameColumnsTransformation,
     SelectCountryTransformation, WideToLongTransformation)
 
 
@@ -67,8 +67,9 @@ class TestTransformations(unittest.TestCase):
             'year': [2021, None],
             'value': [100, None]
         })
-        transformation = DropMissingValuesTransformation(
-            columns=['year', 'value']
+        transformation = CallableTransformation(
+            pd.DataFrame.dropna,
+            subset=['year', 'value']
         )
         transformed_data = transformation.transform(data)
         self.assertEqual(len(transformed_data), 1)

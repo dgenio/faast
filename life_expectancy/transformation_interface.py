@@ -14,6 +14,16 @@ class Transformation(ABC):
         return True
 
 
+class CallableTransformation(Transformation):
+    def __init__(self, func: callable, *args, **kwargs):
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
+        return self.func(data, *self.args, **self.kwargs)
+
+
 class TransformationPipeline:
     def __init__(self):
         self.transformations = []
@@ -110,11 +120,3 @@ class ConvertValueToNumericTransformation(Transformation):
 
     def is_necessary(self, data: pd.DataFrame) -> bool:
         return data['value'].dtype != 'float64'
-
-
-class DropMissingValuesTransformation(Transformation):
-    def __init__(self, columns: list):
-        self.columns = columns
-
-    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
-        return data.dropna(subset=self.columns)
