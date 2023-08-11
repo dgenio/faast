@@ -13,6 +13,16 @@ from life_expectancy.transformation_interface import (
 
 
 def main(file_path: str, country_code: Region = Region.PT) -> pd.DataFrame:
+    """Run loading and data cleaning
+
+    Args:
+        file_path (str): Path to file
+        country_code (Region, optional): Region to filter.
+        Defaults to Region.PT.
+
+    Returns:
+        pd.DataFrame: Data filtered and clean
+    """
     # Load the data using the appropriate strategy
     raw_data = DataLoader.load_data(file_path=file_path)
 
@@ -52,9 +62,14 @@ if __name__ == "__main__":  # pragma: no cover
         type=str, default='PT',
         help='Country code to filter data'
     )
+    parser.add_argument(
+        '--file_path',
+        type=str, required=True,
+        help='File with data'
+    )
     args = parser.parse_args()
 
     # Convert the country code string to the corresponding Region enum value
-    country_code = Region(args.country.upper())
+    country = Region(args.country.upper())
 
-    main(country_code=country_code)
+    main(file_path=args.file_path, country_code=country)
